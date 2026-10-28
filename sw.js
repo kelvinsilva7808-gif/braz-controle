@@ -1,1 +1,11 @@
-const CACHE='braz-2.1.0';const ASSETS=['/','/index.html','/manifest.webmanifest','/icons/icon.svg'];self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('supabase.co'))return;e.respondWith(fetch(e.request).then(r=>{let c=r.clone();caches.open(CACHE).then(x=>x.put(e.request,c));return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match('/index.html'))))});
+const VERSION="2.2.0";
+const STATIC_CACHE="braz-static-"+VERSION;
+const RUNTIME_CACHE="braz-runtime-"+VERSION;
+const CORE=["/offline.html","/manifest.webmanifest","/icons/icon-192.png","/icons/icon-512.png","/icons/apple-touch-icon.png"];
+self.addEventListener("install",event=>{event.waitUntil(caches.open(STATIC_CACHE).then(cache=>cache.addAll(CORE)))});
+self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>!key.endsWith(VERSION)).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
+self.addEventListener("message",event=>{if(event.data&&event.data.type==="SKIP_WAITING")self.skipWaiting()});
+self.addEventListener("fetch",event=>{const req=event.request;if(req.method!=="GET")return;const url=new URL(req.url);if(url.origin!==self.location.origin||url.pathname.includes("supabase"))return;
+ if(req.mode==="navigate"){event.respondWith(fetch(req,{cache:"no-store"}).then(response=>{const copy=response.clone();caches.open(RUNTIME_CACHE).then(cache=>cache.put(req,copy));return response}).catch(()=>caches.match(req).then(hit=>hit||caches.match("/offline.html"))));return}
+ event.respondWith(caches.match(req).then(hit=>hit||fetch(req).then(response=>{if(response.ok){const copy=response.clone();caches.open(RUNTIME_CACHE).then(cache=>cache.put(req,copy))}return response})))
+});

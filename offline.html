@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07110f">
+  <title>Braz Controle offline</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:#07110f;color:#f5faf8;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+    .box{width:min(430px,100%);padding:28px;text-align:center;border:1px solid #244238;border-radius:24px;background:#0d1d19;box-shadow:0 18px 55px #0006}
+    .logo{width:64px;height:64px;margin:auto;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#35e39a,#f4c95d);color:#062018;font-size:32px;font-weight:900}
+    p{color:#a9beb7;line-height:1.5}
+    button{padding:12px 16px;border:0;border-radius:12px;background:#35e39a;color:#052219;font-weight:800;cursor:pointer}
+  </style>
+</head>
+<body>
+  <main class="box">
+    <div class="logo">B</div>
+    <h1>Você está sem conexão</h1>
+    <p>O Braz Controle precisa de internet para autenticar e sincronizar seus dados com segurança. Os registros já salvos permanecem protegidos no Supabase.</p>
+    <button type="button" onclick="location.reload()">Tentar novamente</button>
+  </main>
+</body>
+</html>
